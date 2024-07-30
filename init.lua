@@ -12,7 +12,7 @@ local displayAwake = false
 -- Function to update the menubar item based on the state
 local function updateMenubar()
     if displayAwake then
-        displayMenu:setTitle("🔴") -- Icon indicating the display is kept awake
+        displayMenu:setTitle("✅") -- Icon indicating the display is kept awake
         displayMenu:setTooltip("Click to allow display sleep")
     else
         displayMenu:setTitle("🔘") -- Icon indicating the display can sleep
@@ -169,6 +169,66 @@ hs.hotkey.bind({"ctrl", "shift", "cmd"}, "z", openNewZedNotepad)
 hs.hotkey.bind({"ctrl", "shift", "cmd"}, "o", openZedNotepad)
 -- Hotkey: ctrl+cmd+v to type clipboard contents
 hs.hotkey.bind({"ctrl", "cmd"}, "v", typeClipboardContents)
+
+-- Hotkey: F13 to bring meet window to top and press cmd+d
+local function bringToFrontAndUnmute()
+    local app = hs.application.find("com.brave.Browser.app.mhglifepdajnkbflieebooepjeldkkkc")
+    if app then
+        app:activate()
+        hs.alert.show("Toggling Mic")
+        hs.eventtap.keyStroke({"cmd"}, "d")
+    else
+        hs.alert.show("Brave Browser App not found")
+    end
+end
+local function openAndMuteThenHide()
+    local app = hs.application.find("com.brave.Browser.app.mhglifepdajnkbflieebooepjeldkkkc")
+    if app then
+        hs.timer.doAfter(1, function()
+            app:activate()  
+            hs.alert.show("Muting and Hiding")
+            hs.eventtap.keyStroke({"cmd"}, "d")
+            app:hide()
+        end)
+    else
+        hs.alert.show("Failed to open Brave Browser App")
+    end
+end
+
+-- Hotkey: F13 to bring Brave browser app to front and press cmd+m
+hs.hotkey.bind({}, "F13", bringToFrontAndUnmute)
+
+
+-- Hotkey: F14 to open Brave browser app, press cmd+d to mute, and hide the window
+hs.hotkey.bind({}, "F14", openAndMuteThenHide)
+
+
+
+-- Function to toggle the Arc application
+function toggleArc()
+    local appName = "Arc"
+    local app = hs.application.find(appName)
+    
+    if app then
+        if app:isFrontmost() then
+            hs.eventtap.keyStroke({"cmd"}, "h")
+        else
+            hs.application.launchOrFocus(appName)
+        end
+    else
+        hs.application.launchOrFocus(appName)
+    end
+end
+
+-- Bind the F15 key to the toggleArc function
+hs.hotkey.bind({}, "F15", toggleArc)
+
+-- Reload Hammerspoon configuration
+hs.alert.show("Hammerspoon config loaded")
+
+
+
+
 
 
 
