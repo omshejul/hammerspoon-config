@@ -225,8 +225,7 @@ end
 -- Bind the F15 key to the toggleArc function
 hs.hotkey.bind({}, "F15", toggleArc)
 
--- Reload Hammerspoon configuration
-hs.alert.show("Hammerspoon config loaded")
+
 
 
 
@@ -416,3 +415,7 @@ overrideScrollMouseDown:start()
 overrideScrollMouseUp:start()
 overrideScrollMouseDrag:start()
 -- ==========================================================================================
+
+
+-- Reload Hammerspoon configuration
+hs.alert.show("Hammerspoon config loaded")
