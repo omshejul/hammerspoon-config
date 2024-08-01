@@ -184,10 +184,12 @@ end
 local function openAndMuteThenHide()
     local app = hs.application.find("com.brave.Browser.app.mhglifepdajnkbflieebooepjeldkkkc")
     if app then
-        hs.timer.doAfter(1, function()
+        hs.timer.doAfter(.1, function()
             app:activate()  
             hs.alert.show("Muting and Hiding")
             hs.eventtap.keyStroke({"cmd"}, "d")
+        end)
+        hs.timer.doAfter(1, function()
             app:hide()
         end)
     else
