@@ -1,3 +1,13 @@
+-- Customize the alert appearance
+hs.alert.defaultStyle.strokeColor = { white = 1, alpha = 0.20 }
+hs.alert.defaultStyle.fillColor = { white = 0, alpha = 0.6 }
+hs.alert.defaultStyle.textColor = { white = 1, alpha = 1 }
+hs.alert.defaultStyle.textSize = 50
+hs.alert.defaultStyle.radius = 20
+hs.alert.defaultStyle.fadeInDuration = 0.15
+hs.alert.defaultStyle.fadeOutDuration = .5
+hs.alert.defaultStyle.padding = 20
+
 -- keep screen on
 -- Load necessary modules
 local caffeinate = require "hs.caffeinate"
@@ -189,7 +199,7 @@ local function openAndMuteThenHide()
             hs.alert.show("Muting and Hiding")
             hs.eventtap.keyStroke({"cmd"}, "d")
         end)
-        hs.timer.doAfter(1, function()
+        hs.timer.doAfter(.5, function()
             app:hide()
         end)
     else
