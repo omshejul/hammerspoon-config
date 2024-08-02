@@ -8,7 +8,10 @@ hs.alert.defaultStyle.fadeInDuration = 0.15
 hs.alert.defaultStyle.fadeOutDuration = .5
 hs.alert.defaultStyle.padding = 20
 
--- keep screen on
+-- Keep screen on
+local startTime = 7
+local endTime = 23
+
 -- Load necessary modules
 local caffeinate = require "hs.caffeinate"
 local menubar = require "hs.menubar"
@@ -30,9 +33,21 @@ local function updateMenubar()
     end
 end
 
--- Function to toggle display sleep prevention
+-- Function to toggle display sleep prevention manually
 local function toggleDisplaySleep()
     displayAwake = not displayAwake
+    caffeinate.set("displayIdle", displayAwake, true)
+    updateMenubar()
+end
+
+-- Function to check the current time and update display sleep prevention
+local function checkTimeAndUpdate()
+    local currentHour = tonumber(os.date("%H"))
+    if currentHour >= startTime and currentHour < endTime then
+        displayAwake = true
+    else
+        displayAwake = false
+    end
     caffeinate.set("displayIdle", displayAwake, true)
     updateMenubar()
 end
@@ -40,8 +55,18 @@ end
 -- Set the click callback function for the menubar item
 displayMenu:setClickCallback(toggleDisplaySleep)
 
+-- Timer to check every 60 seconds
+hs.timer.doEvery(60, function()
+    local currentHour = tonumber(os.date("%H"))
+    if currentHour == startTime or currentHour == endTime then
+        checkTimeAndUpdate()
+    end
+end)
+
 -- Initial update to set the default state in the menu
-updateMenubar()
+checkTimeAndUpdate()
+
+
 
 -- Function to search Google for selected text
 
@@ -181,18 +206,20 @@ hs.hotkey.bind({"ctrl", "shift", "cmd"}, "o", openZedNotepad)
 hs.hotkey.bind({"ctrl", "cmd"}, "v", typeClipboardContents)
 
 -- Hotkey: F13 to bring meet window to top and press cmd+d
+appBundleID = "com.apple.Safari.WebApp.401AF39A-5B35-4464-A8C7-18F9A81009AC"
+-- appBundleID = "com.brave.Browser.app.mhglifepdajnkbflieebooepjeldkkkc"
 local function bringToFrontAndUnmute()
-    local app = hs.application.find("com.brave.Browser.app.mhglifepdajnkbflieebooepjeldkkkc")
+    local app = hs.application.find(appBundleID)
     if app then
         app:activate()
         hs.alert.show("Toggling Mic")
         hs.eventtap.keyStroke({"cmd"}, "d")
     else
-        hs.alert.show("Brave Browser App not found")
+        hs.alert.show("App not found")
     end
 end
 local function openAndMuteThenHide()
-    local app = hs.application.find("com.brave.Browser.app.mhglifepdajnkbflieebooepjeldkkkc")
+    local app = hs.application.find(appBundleID)
     if app then
         hs.timer.doAfter(.1, function()
             app:activate()  
@@ -203,15 +230,15 @@ local function openAndMuteThenHide()
             app:hide()
         end)
     else
-        hs.alert.show("Failed to open Brave Browser App")
+        hs.alert.show("Failed to open App")
     end
 end
 
--- Hotkey: F13 to bring Brave browser app to front and press cmd+m
+-- Hotkey: F13 to bring browser app to front and press cmd+m
 hs.hotkey.bind({}, "F13", bringToFrontAndUnmute)
 
 
--- Hotkey: F14 to open Brave browser app, press cmd+d to mute, and hide the window
+-- Hotkey: F14 to open browser app, press cmd+d to mute, and hide the window
 hs.hotkey.bind({}, "F14", openAndMuteThenHide)
 
 
