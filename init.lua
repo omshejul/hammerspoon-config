@@ -89,6 +89,25 @@ function googleSearch(browserBundleID)
     hs.urlevent.openURLWithBundle(url, browserBundleID)
 end
 
+function perplexitySearch(browserBundleID)
+    local oldClipboard = hs.pasteboard.getContents()
+    hs.eventtap.keyStroke({"cmd"}, "c")
+    hs.timer.usleep(200000)
+
+    local selectedText = hs.pasteboard.getContents()
+    local url
+
+    if selectedText:match("://") then
+        url = selectedText
+    elseif selectedText ~= "" then
+        url = "https://www.perplexity.ai/search?focus=internet&q=" .. hs.http.encodeForQuery(selectedText)
+    else
+        url = "https://www.perplexity.ai"
+    end
+
+    hs.urlevent.openURLWithBundle(url, browserBundleID)
+end
+
 function ocrSearch(browserBundleID)
     local oldClipboard = hs.pasteboard.getContents()
     hs.eventtap.keyStroke({"cmd", "shift"}, "1")
@@ -113,7 +132,7 @@ function ocrSearch(browserBundleID)
             end
 
             hs.urlevent.openURLWithBundle(url, browserBundleID)
-            hs.pasteboard.setContents(oldClipboard) -- Restore old clipboard contents
+            -- hs.pasteboard.setContents(oldClipboard) -- Restore old clipboard contents
         end
     end
 
@@ -194,6 +213,7 @@ end
 
 -- Hotkey: ctrl+q to Google search selected text
 hs.hotkey.bind({"ctrl"}, "q", function() googleSearch("company.thebrowser.Browser") end)
+hs.hotkey.bind({"ctrl","cmd", "shift", "alt"}, "p", function() perplexitySearch("company.thebrowser.Browser") end)
 hs.hotkey.bind({"ctrl", "shift"}, "1", function() ocrSearch("company.thebrowser.Browser") end)
 hs.hotkey.bind({"ctrl"}, "w", function() googleSearch("company.thebrowser.Browser") end)
 hs.hotkey.bind({"ctrl", "shift"}, "q", googleMultiSearch) -- search line by line
