@@ -8,53 +8,6 @@ hs.alert.defaultStyle.fadeInDuration = 0.15
 hs.alert.defaultStyle.fadeOutDuration = .5
 hs.alert.defaultStyle.padding = 24
 
--- Hammerspoon init.lua script with alerts and logging
-hs.alert.show("Starting Ping Monitor")  -- Alert at script start
-
--- Function to log messages to a file
-function logMessage(message)
-    local logFile = io.open(os.getenv("HOME") .. "/ping_log.txt", "a")
-    logFile:write(os.date("%Y-%m-%d %H:%M:%S") .. ": " .. message .. "\n")
-    logFile:close()
-end
-
--- Function to ping multiple sites and show notification
-function pingSite()
-    local sites = {"google.com", "cloudflare.com", "opendns.com"}
-    local success = false
-
-    for _, site in ipairs(sites) do
-        local handle = io.popen("ping -c 1 " .. site)
-        local result = handle:read("*a")
-        handle:close()
-
-        if string.find(result, "1 packets transmitted, 1 packets received") then
-            success = true
-            hs.alert.show("Ping successful: " .. site)
-            logMessage("Ping successful: " .. site)
-            break
-        else
-            hs.alert.show("Ping failed: " .. site)
-            logMessage("Ping failed: " .. site)
-        end
-    end
-
-    if not success then
-        hs.notify.new({title="Ping Status", informativeText="All pings failed!"}):send()
-        logMessage("All pings failed!")
-    end
-end
-
--- Ping interval in seconds
-pingInterval = 1
-
--- Start the timer to ping the site every interval
-hs.timer.doEvery(pingInterval, pingSite)
-
-
-
-
-
 -- Keep screen on
 local startTime = 7
 local endTime = 23
