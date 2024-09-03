@@ -1,0 +1,321 @@
+nohup: ./ping_alert.sh: No such file or directory
+nohup: ./ping_alert.sh: No such file or directory
+./alert.sh: line 6: syntax error near unexpected token `else'
+./alert.sh: line 6: `    else'
+button returned:OK
+button returned:OK
+ping: cannot resolve google.com: Unknown host
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+./alert.sh: line 36: jq: command not found
+./alert.sh: line 39: jq: command not found
+./alert.sh: line 36: jq: command not found
+./alert.sh: line 39: jq: command not found
+./alert.sh: line 36: jq: command not found
+./alert.sh: line 39: jq: command not found
+./alert.sh: line 36: jq: command not found
+./alert.sh: line 39: jq: command not found
+./alert.sh: line 36: jq: command not found
+./alert.sh: line 39: jq: command not found
+./alert.sh: line 36: jq: command not found
+./alert.sh: line 39: jq: command not found
+./alert.sh: line 36: jq: command not found
+./alert.sh: line 39: jq: command not found
+./alert.sh: line 36: jq: command not found
+./alert.sh: line 39: jq: command not found
+./alert.sh: line 36: jq: command not found
+./alert.sh: line 39: jq: command not found
+./alert.sh: line 36: jq: command not found
+./alert.sh: line 39: jq: command not found
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+14:18: execution error: The variable Ping is not defined. (-2753)
+14:18: execution error: The variable Ping is not defined. (-2753)
+button returned:OK
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+40:41: syntax error: Expected expression but found unknown token. (-2741)
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+nohup: ./sync.sh: No such file or directory
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK
+button returned:OK

@@ -8,9 +8,39 @@ hs.alert.defaultStyle.fadeInDuration = 0.15
 hs.alert.defaultStyle.fadeOutDuration = .5
 hs.alert.defaultStyle.padding = 24
 
--- Keep screen on
-local startTime = 7
-local endTime = 23
+-- >> PAGE UP/DOWN SCROLLING
+-- Define the slow scroll function
+function scrollSlowly(direction)
+    local scrollAmount = 3  -- Change this value to adjust scroll speed
+    if direction == "up" then
+        hs.eventtap.scrollWheel({0, scrollAmount}, {}, "line")
+    elseif direction == "down" then
+        hs.eventtap.scrollWheel({0, -scrollAmount}, {}, "line")
+    end
+end
+
+-- Bind Control + Page Up to slow scroll up
+hs.hotkey.bind({"ctrl"}, "pageup", function()
+    scrollSlowly("up")
+end)
+
+-- Bind Control + Page Down to slow scroll down
+hs.hotkey.bind({"ctrl"}, "pagedown", function()
+    scrollSlowly("down")
+end)
+
+-- Function to handle the cmd + esc key combination
+function sendEnter()
+    hs.eventtap.keyStroke({}, "return")
+end
+-- << PAGE UP/DOWN SCROLLING
+
+-- Bind the sendEnter function to the cmd + esc hotkey
+hs.hotkey.bind({"cmd"}, "escape", sendEnter)
+
+-- Keep screen on time in hhmm format
+local startTime = 0700
+local endTime = 0942
 
 -- Load necessary modules
 local caffeinate = require "hs.caffeinate"
@@ -18,53 +48,66 @@ local menubar = require "hs.menubar"
 
 -- Create a menubar item
 local displayMenu = menubar.new()
+displayMenu:setTitle("🔘")
 
--- Track the state of display sleep prevention
+-- Track the state of display sleep prevention and manual override
 local displayAwake = false
+local manualOverride = false
 
 -- Function to update the menubar item based on the state
 local function updateMenubar()
     if displayAwake then
-        displayMenu:setTitle("✅") -- Icon indicating the display is kept awake
+        displayMenu:setTitle("✅")
         displayMenu:setTooltip("Click to allow display sleep")
     else
-        displayMenu:setTitle("🔘") -- Icon indicating the display can sleep
+        displayMenu:setTitle("🔘")
         displayMenu:setTooltip("Click to prevent display sleep")
     end
 end
 
 -- Function to toggle display sleep prevention manually
 local function toggleDisplaySleep()
+    manualOverride = true
     displayAwake = not displayAwake
     caffeinate.set("displayIdle", displayAwake, true)
     updateMenubar()
 end
 
+-- Function to check if current time is within the specified range
+local function isWithinTimeRange()
+    local currentTime = tonumber(os.date("%H%M"))
+    if startTime < endTime then
+        return currentTime >= startTime and currentTime < endTime
+    else
+        return currentTime >= startTime or currentTime < endTime
+    end
+end
+
 -- Function to check the current time and update display sleep prevention
 local function checkTimeAndUpdate()
-    local currentHour = tonumber(os.date("%H"))
-    if currentHour >= startTime and currentHour < endTime then
-        displayAwake = true
-    else
-        displayAwake = false
+    if not manualOverride then
+        local shouldBeAwake = isWithinTimeRange()
+        if displayAwake ~= shouldBeAwake then
+            displayAwake = shouldBeAwake
+            caffeinate.set("displayIdle", displayAwake, true)
+            hs.alert.show("Display sleep prevention: " .. (displayAwake and "Enabled" or "Disabled"))
+            updateMenubar()
+        end
     end
-    caffeinate.set("displayIdle", displayAwake, true)
-    updateMenubar()
 end
 
 -- Set the click callback function for the menubar item
 displayMenu:setClickCallback(toggleDisplaySleep)
 
--- Timer to check every 60 seconds
-hs.timer.doEvery(60, function()
-    local currentHour = tonumber(os.date("%H"))
-    if currentHour == startTime or currentHour == endTime then
-        checkTimeAndUpdate()
-    end
-end)
+-- Timer to check every minute
+local timer = hs.timer.doEvery(60, checkTimeAndUpdate)
+
+-- Start the timer
+timer:start()
+
 
 -- Initial update to set the default state in the menu
-checkTimeAndUpdate()
+-- checkTimeAndUpdate()
 
 
 
@@ -240,7 +283,9 @@ hs.hotkey.bind({"ctrl", "shift", "cmd"}, "o", openZedNotepad)
 hs.hotkey.bind({"ctrl", "cmd"}, "v", typeClipboardContents)
 
 -- Hotkey: F13 to bring meet window to top and press cmd+d
-appBundleID = "com.apple.Safari.WebApp.401AF39A-5B35-4464-A8C7-18F9A81009AC"
+-- /Users/omshejul/Applications/Orion/WebApps/Meet.app/Contents/MacOS/Meet
+
+appBundleID = "com.kagi.kagimacOS.WebApp.1A1E36C8-3002-4860-BD8A-050DAE48CB15"
 -- appBundleID = "com.brave.Browser.app.mhglifepdajnkbflieebooepjeldkkkc"
 local function bringToFrontAndUnmute()
     local app = hs.application.find(appBundleID)
