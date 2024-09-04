@@ -40,7 +40,7 @@ hs.hotkey.bind({"cmd"}, "escape", sendEnter)
 
 -- Keep screen on time in hhmm format
 local startTime = 0700
-local endTime = 0942
+local endTime = 2300
 
 -- Load necessary modules
 local caffeinate = require "hs.caffeinate"
@@ -85,6 +85,9 @@ end
 
 -- Function to check the current time and update display sleep prevention
 local function checkTimeAndUpdate()
+    if (tonumber(os.date("%H")%3)== 0) then
+        manualOverride = false
+    end
     if not manualOverride then
         local shouldBeAwake = isWithinTimeRange()
         if displayAwake ~= shouldBeAwake then
@@ -107,7 +110,7 @@ timer:start()
 
 
 -- Initial update to set the default state in the menu
--- checkTimeAndUpdate()
+checkTimeAndUpdate()
 
 
 
@@ -285,7 +288,7 @@ hs.hotkey.bind({"ctrl", "cmd"}, "v", typeClipboardContents)
 -- Hotkey: F13 to bring meet window to top and press cmd+d
 -- /Users/omshejul/Applications/Orion/WebApps/Meet.app/Contents/MacOS/Meet
 
-appBundleID = "com.kagi.kagimacOS.WebApp.1A1E36C8-3002-4860-BD8A-050DAE48CB15"
+appBundleID = "com.apple.Safari.WebApp.2B5674E7-0B4C-4BE1-B195-07FF44758532"
 -- appBundleID = "com.brave.Browser.app.mhglifepdajnkbflieebooepjeldkkkc"
 local function bringToFrontAndUnmute()
     local app = hs.application.find(appBundleID)
