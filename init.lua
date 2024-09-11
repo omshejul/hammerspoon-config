@@ -1,3 +1,5 @@
+require("hs.ipc")
+hs.ipc.cliInstall()
 -- Customize the alert appearance
 hs.alert.defaultStyle.strokeColor = { white = 1, alpha = 0.20 }
 hs.alert.defaultStyle.fillColor = { white = 0, alpha = 0.6 }
@@ -7,6 +9,24 @@ hs.alert.defaultStyle.radius = 16
 hs.alert.defaultStyle.fadeInDuration = 0.15
 hs.alert.defaultStyle.fadeOutDuration = .5
 hs.alert.defaultStyle.padding = 24
+
+-- >> SYNC PROGRESS
+-- Define the menu bar icon
+
+-- Function to display the icon
+function showSyncIcon()
+    syncMenu = hs.menubar.new()
+    syncMenu:setIcon(hs.image.imageFromName("NSActionTemplate"))
+    syncMenu:setTitle("🔄")
+end
+
+-- Function to remove the icon
+function removeSyncIcon()
+    syncMenu:removeFromMenuBar()
+end
+-- << SYNC PROGRESS
+
+
 
 -- >> PAGE UP/DOWN SCROLLING
 -- Define the slow scroll function
@@ -40,7 +60,7 @@ hs.hotkey.bind({"cmd"}, "escape", sendEnter)
 
 -- Keep screen on time in hhmm format
 local startTime = 0700
-local endTime = 2300
+local endTime = 2200
 
 -- Load necessary modules
 local caffeinate = require "hs.caffeinate"
@@ -112,6 +132,16 @@ timer:start()
 -- Initial update to set the default state in the menu
 checkTimeAndUpdate()
 
+
+-- >> SPEAK WORD
+hs.hotkey.bind({"ctrl", "alt", "cmd", "shift"}, "L", function()
+    -- Command to execute your Python script
+    local pythonScript = "/usr/local/bin/python3 -u ~/SavedMain/python/Assisto_PY/googleTTS/tts.py"
+    
+    -- Execute the script
+    hs.execute(pythonScript, true)
+end)
+-- << SPEAK WORD
 
 
 -- Function to search Google for selected text
