@@ -1,4 +1,4 @@
-require("hs.ipc")
+-- require("hs.ipc")
 hs.ipc.cliInstall()
 -- Customize the alert appearance
 hs.alert.defaultStyle.strokeColor = { white = 1, alpha = 0.20 }
@@ -10,13 +10,117 @@ hs.alert.defaultStyle.fadeInDuration = 0.15
 hs.alert.defaultStyle.fadeOutDuration = .5
 hs.alert.defaultStyle.padding = 24
 
+-- >> SIGNAL LOCK
+-- Set the password and time limit
+local password = "fsdfa"
+local passwordEntered = false
+local lastPasswordTime = 0
+local timeLimit = 3600000000000 -- 1 hour in nanoseconds (Hammerspoon uses nanoseconds for timers)
+local isPromptOpen = false -- Flag to check if prompt is already open
+
+-- Function to prompt for the password
+function promptForPassword()
+    -- Prevent multiple prompts
+    if isPromptOpen then return end
+    isPromptOpen = true
+
+    local hideTimer = nil
+    local function hideSignal()
+        if signalApp then
+            signalApp:hide()
+        end
+    end
+
+    -- Start a timer to continuously hide Signal
+    hideTimer = hs.timer.doEvery(0.1, hideSignal)
+
+    -- Show the password prompt
+    local button, input = hs.dialog.textPrompt("Password Required", "Please enter the password to continue:", "", "OK", "Cancel", true)   
+
+    if button == "OK" and input == password then
+        passwordEntered = true
+        lastPasswordTime = hs.timer.absoluteTime()
+        -- Stop the hiding timer
+        if hideTimer then
+            hideTimer:stop()
+        end
+        -- Unhide and activate Signal if it was hidden
+        if signalApp then
+            signalApp:unhide()
+            signalApp:activate()
+        else
+            hs.application.launchOrFocus("Signal")
+        end
+    else
+        hs.alert.show("Incorrect password. Access denied.")
+    end
+
+    -- Stop the hiding timer if it's still running
+    if hideTimer then
+        hideTimer:stop()
+    end
+
+    -- Reset the prompt flag
+    isPromptOpen = false
+end
+
+-- Function to handle application events
+function appWatcher(appName, eventType, app)
+    if signalApp and not passwordEntered then
+        signalApp:hide()
+    end
+    if appName == "Signal" then
+        signalApp = app -- Store the reference to the Signal app
+
+        -- Hide the application immediately upon launch or activation
+        if eventType == hs.application.watcher.launched or eventType == hs.application.watcher.activated then
+            if not passwordEntered or (hs.timer.absoluteTime() - lastPasswordTime > timeLimit) then
+                signalApp:hide()
+                hs.timer.doAfter(.5, function()
+                    promptForPassword()
+                end)
+            end
+        elseif eventType == hs.application.watcher.terminated then
+            -- Reset the flag when the application is closed
+            passwordEntered = false
+            signalApp = nil -- Clear the reference
+        end
+    end
+end
+
+-- Create an application watcher
+appWatcher = hs.application.watcher.new(appWatcher)
+appWatcher:start()
+-- << SIGNAL LOCK
+
+-- >> MUSIC
+-- Bind the F7 key
+hs.hotkey.bind({}, 'F7', function()
+    local appName = 'YouTube Music'
+    local appPath = '/Users/omshejul/Applications/Brave Browser Apps.localized/YouTube Music.app'
+    local bundleID = 'com.brave.Browser.app.cinhimbnkkaeohfgghhklpknlkffjgod'
+
+    local app = hs.application.get(bundleID)
+
+    if not app then
+        -- Launch YouTube Music using its path
+        hs.application.open(appPath)
+    else
+        -- Send the Play/Pause media key globally
+        hs.eventtap.event.newSystemKeyEvent('PLAY', true):post()
+        hs.eventtap.event.newSystemKeyEvent('PLAY', false):post()
+    end
+end)
+-- << MUSIC
+
+
 -- >> SYNC PROGRESS
 -- Define the menu bar icon
 
 -- Function to display the icon
 function showSyncIcon()
     syncMenu = hs.menubar.new()
-    syncMenu:setIcon(hs.image.imageFromName("NSActionTemplate"))
+    -- syncMenu:setIcon(hs.image.imageFromName("NSActionTemplate"))
     syncMenu:setTitle("🔄")
 end
 
@@ -25,6 +129,36 @@ function removeSyncIcon()
     syncMenu:removeFromMenuBar()
 end
 -- << SYNC PROGRESS
+
+-- >> KEYBOARD PROGRESS
+-- Define the menu bar icon for keyboard
+
+-- Function to display the keyboard icon
+function showKeyboardIcon()
+    keyboardMenu = hs.menubar.new()
+    keyboardMenu:setTitle("🅾️")
+    keyboardMenu:setClickCallback(function()
+        hs.eventtap.keyStroke({"cmd", "alt", "shift", "ctrl"}, "o")
+    end)
+end
+
+-- Function to remove the keyboard icon
+function removeKeyboardIcon()
+    if keyboardMenu then
+        keyboardMenu:delete()
+        keyboardMenu = nil
+    end
+end
+
+-- To run this command from the terminal:
+-- hs -c "showKeyboardIcon()"
+-- or
+-- hs -c "removeKeyboardIcon()"
+-- << KEYBOARD PROGRESS
+
+
+
+
 
 
 
@@ -60,7 +194,7 @@ hs.hotkey.bind({"cmd"}, "escape", sendEnter)
 
 -- Keep screen on time in hhmm format
 local startTime = 0700
-local endTime = 2200
+local endTime = 2100
 
 -- Load necessary modules
 local caffeinate = require "hs.caffeinate"
@@ -86,9 +220,23 @@ local function updateMenubar()
 end
 
 -- Function to toggle display sleep prevention manually
-local function toggleDisplaySleep()
+function toggleDisplaySleep()
     manualOverride = true
     displayAwake = not displayAwake
+    caffeinate.set("displayIdle", displayAwake, true)
+    updateMenubar()
+end
+
+-- Function to enable display sleep prevention
+function enableDisplaySleepPrevention()
+    displayAwake = true
+    caffeinate.set("displayIdle", displayAwake, true)
+    updateMenubar()
+end
+
+-- Function to disable display sleep prevention
+function disableDisplaySleepPrevention()
+    displayAwake = false
     caffeinate.set("displayIdle", displayAwake, true)
     updateMenubar()
 end
@@ -128,7 +276,6 @@ local timer = hs.timer.doEvery(60, checkTimeAndUpdate)
 -- Start the timer
 timer:start()
 
-
 -- Initial update to set the default state in the menu
 checkTimeAndUpdate()
 
@@ -136,7 +283,7 @@ checkTimeAndUpdate()
 -- >> SPEAK WORD
 hs.hotkey.bind({"ctrl", "alt", "cmd", "shift"}, "L", function()
     -- Command to execute your Python script
-    local pythonScript = "/usr/local/bin/python3 -u ~/SavedMain/python/Assisto_PY/googleTTS/tts.py"
+    local pythonScript = "/usr/local/bin/python3 -u ~/SavedMain/python/Assisto_PY/googleTTS/tts_all.py"
     
     -- Execute the script
     hs.execute(pythonScript, true)
@@ -318,7 +465,7 @@ hs.hotkey.bind({"ctrl", "cmd"}, "v", typeClipboardContents)
 -- Hotkey: F13 to bring meet window to top and press cmd+d
 -- /Users/omshejul/Applications/Orion/WebApps/Meet.app/Contents/MacOS/Meet
 
-appBundleID = "com.apple.Safari.WebApp.2B5674E7-0B4C-4BE1-B195-07FF44758532"
+appBundleID = "com.apple.Safari"
 -- appBundleID = "com.brave.Browser.app.mhglifepdajnkbflieebooepjeldkkkc"
 local function bringToFrontAndUnmute()
     local app = hs.application.find(appBundleID)
@@ -355,24 +502,9 @@ hs.hotkey.bind({}, "F14", openAndMuteThenHide)
 
 
 
--- Function to toggle the Arc application
-function toggleArc()
-    local appName = "Arc"
-    local app = hs.application.find(appName)
-    
-    if app then
-        if app:isFrontmost() then
-            hs.eventtap.keyStroke({"cmd"}, "h")
-        else
-            hs.application.launchOrFocus(appName)
-        end
-    else
-        hs.application.launchOrFocus(appName)
-    end
-end
 
--- Bind the F15 key to the toggleArc function
-hs.hotkey.bind({}, "F15", toggleArc)
+
+
 
 
 
