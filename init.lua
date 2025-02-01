@@ -1,3 +1,29 @@
+-- Remap Caps Lock to Escape
+local function remapKey(modifiers, key, keyCode)
+    hs.eventtap.event.newKeyEvent(modifiers, key, true):post()
+    hs.timer.usleep(1000)
+    hs.eventtap.event.newKeyEvent(modifiers, key, false):post()
+end
+
+-- Turn off Caps Lock on load
+
+
+-- Create an event tap to capture Caps Lock
+capsLockTap = hs.eventtap.new({ hs.eventtap.event.types.flagsChanged }, function(event)
+    local flags = event:getFlags()
+    local keyCode = event:getKeyCode()
+    
+    -- Keycode 57 is Caps Lock
+    if keyCode == 57 then
+        remapKey({}, 'escape', 53)
+        hs.hid.capslock.set(false)
+        return true
+    end
+    return false
+end)
+
+capsLockTap:start()
+
 -- require("hs.ipc")
 hs.ipc.cliInstall()
 -- Customize the alert appearance
@@ -309,7 +335,11 @@ function googleSearch(browserBundleID)
         url = "http://www.google.com"
     end
 
-    hs.urlevent.openURLWithBundle(url, browserBundleID)
+    if browserBundleID then
+        hs.urlevent.openURLWithBundle(url, browserBundleID)
+    else
+        hs.urlevent.openURL(url)
+    end
 end
 
 function perplexitySearch(browserBundleID)
@@ -449,7 +479,7 @@ end
 
 
 -- Hotkey: ctrl+q to Google search selected text
-hs.hotkey.bind({"ctrl"}, "q", function() googleSearch("company.thebrowser.Browser") end)
+hs.hotkey.bind({"ctrl"}, "q", function() googleSearch() end)
 hs.hotkey.bind({"ctrl","cmd", "shift", "alt"}, "p", function() perplexitySearch("company.thebrowser.Browser") end)
 hs.hotkey.bind({"ctrl", "shift"}, "1", function() ocrSearch("company.thebrowser.Browser") end)
 hs.hotkey.bind({"ctrl"}, "w", function() googleSearch("company.thebrowser.Browser") end)
