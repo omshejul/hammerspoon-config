@@ -1,28 +1,3 @@
--- Remap Caps Lock to Escape
-local function remapKey(modifiers, key, keyCode)
-    hs.eventtap.event.newKeyEvent(modifiers, key, true):post()
-    hs.timer.usleep(1000)
-    hs.eventtap.event.newKeyEvent(modifiers, key, false):post()
-end
-
--- Turn off Caps Lock on load
-
-
--- Create an event tap to capture Caps Lock
-capsLockTap = hs.eventtap.new({ hs.eventtap.event.types.flagsChanged }, function(event)
-    local flags = event:getFlags()
-    local keyCode = event:getKeyCode()
-    
-    -- Keycode 57 is Caps Lock
-    if keyCode == 57 then
-        remapKey({}, 'escape', 53)
-        hs.hid.capslock.set(false)
-        return true
-    end
-    return false
-end)
-
-capsLockTap:start()
 
 -- require("hs.ipc")
 hs.ipc.cliInstall()
@@ -115,8 +90,10 @@ function appWatcher(appName, eventType, app)
 end
 
 -- Create an application watcher
+
 appWatcher = hs.application.watcher.new(appWatcher)
 appWatcher:start()
+
 -- << SIGNAL LOCK
 
 -- >> MUSIC
@@ -297,13 +274,13 @@ end
 displayMenu:setClickCallback(toggleDisplaySleep)
 
 -- Timer to check every minute
-local timer = hs.timer.doEvery(60, checkTimeAndUpdate)
+-- local timer = hs.timer.doEvery(60, checkTimeAndUpdate)
 
 -- Start the timer
-timer:start()
+-- timer:start()
 
 -- Initial update to set the default state in the menu
-checkTimeAndUpdate()
+-- checkTimeAndUpdate()
 
 
 -- >> SPEAK WORD
@@ -482,7 +459,7 @@ end
 hs.hotkey.bind({"ctrl"}, "q", function() googleSearch() end)
 hs.hotkey.bind({"ctrl","cmd", "shift", "alt"}, "p", function() perplexitySearch("company.thebrowser.Browser") end)
 hs.hotkey.bind({"ctrl", "shift"}, "1", function() ocrSearch("company.thebrowser.Browser") end)
-hs.hotkey.bind({"ctrl"}, "w", function() googleSearch("company.thebrowser.Browser") end)
+-- hs.hotkey.bind({"ctrl"}, "w", function() googleSearch("company.thebrowser.Browser") end)
 hs.hotkey.bind({"ctrl", "shift"}, "q", googleMultiSearch) -- search line by line
 -- Binds the "ctrl + y" hotkey to the youtubeSearch function.
 hs.hotkey.bind({"ctrl"}, "y", youtubeSearch)
