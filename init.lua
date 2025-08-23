@@ -13,7 +13,7 @@ hs.alert.defaultStyle.padding = 24
 
 -- >> SIGNAL LOCK
 -- Set the password and time limit
-local password = "fsdfa"
+local password = "1433"
 local passwordEntered = false
 local lastPasswordTime = 0
 local timeLimit = 3600000000000 -- 1 hour in nanoseconds (Hammerspoon uses nanoseconds for timers)
@@ -34,6 +34,15 @@ function promptForPassword()
 
     -- Start a timer to continuously hide Signal
     hideTimer = hs.timer.doEvery(0.1, hideSignal)
+
+    -- Ensure the dialog gets keyboard focus without clicking
+    local hsApp = hs.application.get("Hammerspoon")
+    if hsApp then
+        hsApp:activate(true)
+    else
+        hs.application.launchOrFocus("Hammerspoon")
+    end
+    hs.timer.usleep(100000)
 
     -- Show the password prompt
     local button, input = hs.dialog.textPrompt("Password Required", "Please enter the password to continue:", "", "OK", "Cancel", true)   
