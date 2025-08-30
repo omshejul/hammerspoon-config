@@ -26,23 +26,32 @@ function promptForPassword()
     isPromptOpen = true
 
     local hideTimer = nil
-    local function hideSignal()
+    local function enforceFocusAndHide()
         if signalApp then
             signalApp:hide()
         end
+        local frontApp = hs.application.frontmostApplication()
+        if frontApp and frontApp:name() ~= "Hammerspoon" then
+            local hsApp = hs.application.get("Hammerspoon")
+            if hsApp then
+                hsApp:activate(true)
+            else
+                hs.application.launchOrFocus("Hammerspoon")
+            end
+        end
     end
 
-    -- Start a timer to continuously hide Signal
-    hideTimer = hs.timer.doEvery(0.1, hideSignal)
+    -- Start a timer to continuously hide Signal and keep Hammerspoon focused while the prompt is open
+    hideTimer = hs.timer.doEvery(0.05, enforceFocusAndHide)
 
-    -- Ensure the dialog gets keyboard focus without clicking
+    -- Give initial focus to Hammerspoon before showing the dialog
     local hsApp = hs.application.get("Hammerspoon")
     if hsApp then
         hsApp:activate(true)
     else
         hs.application.launchOrFocus("Hammerspoon")
     end
-    hs.timer.usleep(100000)
+    hs.timer.usleep(150000)
 
     -- Show the password prompt
     local button, input = hs.dialog.textPrompt("Password Required", "Please enter the password to continue:", "", "OK", "Cancel", true)   
