@@ -1,3 +1,10 @@
+-- >> RUPEE SYMBOL HOTKEY
+-- Replace Option+4 with ₹ symbol
+local function insertRupeeSymbol()
+    hs.eventtap.keyStrokes("₹")
+end
+
+hs.hotkey.bind({"alt"}, "4", insertRupeeSymbol)
 
 -- require("hs.ipc")
 hs.ipc.cliInstall()
