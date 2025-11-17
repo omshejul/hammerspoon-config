@@ -1,3 +1,41 @@
+-- >> ENV FILE LOADER
+-- Load environment variables from .env file
+local function loadEnvFile()
+    local envPath = os.getenv("HOME") .. "/.hammerspoon/.env"
+    local envVars = {}
+    
+    local file = io.open(envPath, "r")
+    if file then
+        for line in file:lines() do
+            -- Skip empty lines and comments
+            line = line:match("^%s*(.-)%s*$") -- trim whitespace
+            if line ~= "" and not line:match("^#") then
+                local key, value = line:match("^([^=]+)=(.+)$")
+                if key and value then
+                    key = key:match("^%s*(.-)%s*$") -- trim key
+                    value = value:match("^%s*(.-)%s*$") -- trim value
+                    -- Remove quotes if present
+                    if value:match('^".*"$') or value:match("^'.*'$") then
+                        value = value:sub(2, -2)
+                    end
+                    envVars[key] = value
+                end
+            end
+        end
+        file:close()
+    end
+    
+    return envVars
+end
+
+-- Load .env file and create a getter function
+local envVars = loadEnvFile()
+local function getEnv(key)
+    -- First check .env file, then fallback to system environment
+    return envVars[key] or os.getenv(key) or ""
+end
+-- << ENV FILE LOADER
+
 -- >> RUPEE SYMBOL HOTKEY
 -- Replace Option+4 with ₹ symbol
 local function insertRupeeSymbol()
@@ -19,8 +57,13 @@ hs.alert.defaultStyle.fadeOutDuration = .5
 hs.alert.defaultStyle.padding = 24
 
 -- >> SIGNAL LOCK
--- Set the password and time limit
-local password = "1433"
+-- Set the password hash and time limit
+-- Store the SHA256 hash of your password in .env file as HS_SIGNAL_PASSWORD_HASH
+-- Example: echo -n 'yourpassword' | shasum -a 256 | awk '{print $1}'
+local passwordHash = getEnv("HS_SIGNAL_PASSWORD_HASH")
+if passwordHash == "" then
+    hs.alert.show("Warning: HS_SIGNAL_PASSWORD_HASH not set in .env")
+end
 local passwordEntered = false
 local lastPasswordTime = 0
 local timeLimit = 3600000000000 -- 1 hour in nanoseconds (Hammerspoon uses nanoseconds for timers)
@@ -62,8 +105,9 @@ function promptForPassword()
 
     -- Show the password prompt
     local button, input = hs.dialog.textPrompt("Password Required", "Please enter the password to continue:", "", "OK", "Cancel", true)   
-
-    if button == "OK" and input == password then
+    
+    -- Hash the input and compare with stored hash
+    if button == "OK" and input ~= "" and hs.hash.SHA256(input) == passwordHash then
         passwordEntered = true
         lastPasswordTime = hs.timer.absoluteTime()
         -- Stop the hiding timer
@@ -361,6 +405,75 @@ function perplexitySearch(browserBundleID)
     end
 
     hs.urlevent.openURLWithBundle(url, browserBundleID)
+end
+
+function chatgptSearch(browserBundleID)
+    local oldClipboard = hs.pasteboard.getContents()
+    hs.eventtap.keyStroke({"cmd"}, "c")
+    hs.timer.usleep(200000)
+
+    local selectedText = hs.pasteboard.getContents()
+    local url
+
+    if selectedText:match("://") then
+        url = selectedText
+    elseif selectedText ~= "" then
+        url = "https://chat.openai.com/?q=" .. hs.http.encodeForQuery(selectedText)
+    else
+        url = "https://chat.openai.com"
+    end
+
+    if browserBundleID then
+        hs.urlevent.openURLWithBundle(url, browserBundleID)
+    else
+        hs.urlevent.openURL(url)
+    end
+end
+
+function claudeSearch(browserBundleID)
+    local oldClipboard = hs.pasteboard.getContents()
+    hs.eventtap.keyStroke({"cmd"}, "c")
+    hs.timer.usleep(200000)
+
+    local selectedText = hs.pasteboard.getContents()
+    local url
+
+    if selectedText:match("://") then
+        url = selectedText
+    elseif selectedText ~= "" then
+        url = "https://claude.ai/chat?q=" .. hs.http.encodeForQuery(selectedText)
+    else
+        url = "https://claude.ai"
+    end
+
+    if browserBundleID then
+        hs.urlevent.openURLWithBundle(url, browserBundleID)
+    else
+        hs.urlevent.openURL(url)
+    end
+end
+
+function googleAISearch(browserBundleID)
+    local oldClipboard = hs.pasteboard.getContents()
+    hs.eventtap.keyStroke({"cmd"}, "c")
+    hs.timer.usleep(200000)
+
+    local selectedText = hs.pasteboard.getContents()
+    local url
+
+    if selectedText:match("://") then
+        url = selectedText
+    elseif selectedText ~= "" then
+        url = "https://www.google.com/search?q=" .. hs.http.encodeForQuery(selectedText) .. "&udm=50"
+    else
+        url = "https://www.google.com/search?udm=50"
+    end
+
+    if browserBundleID then
+        hs.urlevent.openURLWithBundle(url, browserBundleID)
+    else
+        hs.urlevent.openURL(url)
+    end
 end
 
 function ocrSearch(browserBundleID)
@@ -729,6 +842,333 @@ overrideScrollMouseUp:start()
 overrideScrollMouseDrag:start()
 -- ==========================================================================================
 
+-- >> CUSTOM MENU EXAMPLE
+-- Example of a keybind-triggered menu using hs.chooser
+-- You can customize the menu items and their actions
+
+-- Helper function to load custom icons
+-- Place your icon files in ~/.hammerspoon/icons/ or specify full paths
+-- Supports: PNG, JPEG, SVG, PDF, TIFF, GIF, and other macOS-supported formats
+local function loadIcon(iconName)
+    local iconPath = os.getenv("HOME") .. "/.hammerspoon/icons/" .. iconName
+    local image = hs.image.imageFromPath(iconPath)
+    -- Fallback to system icon if custom icon doesn't exist
+    if not image then
+        return hs.image.imageFromName("NSActionTemplate")
+    end
+    return image
+end
+
+-- Helper function to add padding to SVG icons
+local function addPaddingToSVG(iconPath, paddingPercent)
+    paddingPercent = paddingPercent or 20  -- Default 20% padding
+    
+    local file = io.open(iconPath, "r")
+    if not file then
+        return nil
+    end
+    
+    local svgContent = file:read("*all")
+    file:close()
+    
+    -- Extract viewBox values (usually "0 0 width height")
+    local viewBox = svgContent:match('viewBox="([^"]*)"')
+    if not viewBox then
+        -- If no viewBox, try to get width and height
+        local width = svgContent:match('width="([^"]*)"') or "24"
+        local height = svgContent:match('height="([^"]*)"') or "24"
+        viewBox = "0 0 " .. width .. " " .. height
+    end
+    
+    local x, y, width, height = viewBox:match("([%d.]+)%s+([%d.]+)%s+([%d.]+)%s+([%d.]+)")
+    if not x or not y or not width or not height then
+        return nil
+    end
+    
+    width = tonumber(width)
+    height = tonumber(height)
+    
+    -- Calculate padding amount
+    local paddingX = width * (paddingPercent / 100)
+    local paddingY = height * (paddingPercent / 100)
+    
+    -- New viewBox with padding
+    local newViewBox = string.format("%.2f %.2f %.2f %.2f", 
+        -paddingX, -paddingY, 
+        width + (paddingX * 2), 
+        height + (paddingY * 2))
+    
+    -- Replace or add viewBox
+    if svgContent:match('viewBox=') then
+        svgContent = svgContent:gsub('viewBox="[^"]*"', 'viewBox="' .. newViewBox .. '"')
+    else
+        -- Add viewBox to svg tag
+        svgContent = svgContent:gsub('(<svg[^>]*)>', '%1 viewBox="' .. newViewBox .. '">', 1)
+    end
+    
+    -- Create temporary file
+    local tempPath = os.getenv("HOME") .. "/.hammerspoon/icons/.temp_padded_" .. hs.hash.SHA256(iconPath):sub(1, 8) .. ".svg"
+    local tempFile = io.open(tempPath, "w")
+    if tempFile then
+        tempFile:write(svgContent)
+        tempFile:close()
+        
+        local image = hs.image.imageFromPath(tempPath)
+        
+        -- Clean up temp file after a delay
+        hs.timer.doAfter(1, function()
+            os.remove(tempPath)
+        end)
+        
+        return image
+    end
+    
+    return nil
+end
+
+-- Helper function to load icons from popular icon libraries
+-- Examples:
+-- loadIconFromLibrary("heroicons", "document-text", "outline")  -- Heroicons
+-- loadIconFromLibrary("lucide", "file-text")  -- Lucide icons
+-- You can download SVG icons from:
+-- - Heroicons: https://heroicons.com/
+-- - Lucide: https://lucide.dev/
+-- - React Icons: https://react-icons.github.io/react-icons/ (download SVG)
+-- - Font Awesome: https://fontawesome.com/icons (download SVG)
+-- - Material Icons: https://fonts.google.com/icons (download SVG)
+local function loadIconFromLibrary(library, iconName, style)
+    local iconPath
+    -- Heroicons uses style (outline/solid), other libraries don't
+    if library == "heroicons" then
+        style = style or "solid"  -- default to solid for heroicons
+        iconPath = os.getenv("HOME") .. "/.hammerspoon/icons/" .. library .. "/" .. style .. "/" .. iconName .. ".svg"
+    elseif library == "react-icons" then
+        -- React Icons (like FcGoogle)
+        iconPath = os.getenv("HOME") .. "/.hammerspoon/icons/" .. library .. "/" .. iconName .. ".svg"
+    else
+        -- For lucide, simple-icons, etc. (no style)
+        iconPath = os.getenv("HOME") .. "/.hammerspoon/icons/" .. library .. "/" .. iconName .. ".svg"
+    end
+    
+    -- Try to load with padding first
+    local image = addPaddingToSVG(iconPath, 20)  -- 20% padding
+    if image then
+        return image
+    end
+    
+    -- Fallback to regular loading
+    image = hs.image.imageFromPath(iconPath)
+    if not image then
+        return hs.image.imageFromName("NSActionTemplate")
+    end
+    return image
+end
+
+-- Function to show pasteboard submenu with frequently used text
+local function showPasteboardMenu()
+    -- Define frequently used text items
+    -- Set these environment variables in ~/.hammerspoon/.env file:
+    -- HS_ADDRESS="Your address"
+    -- HS_WEBSITE="https://yourwebsite.com"
+    -- HS_EMAIL="your@email.com"
+    -- HS_GITHUB="https://github.com/yourusername"
+    -- HS_LINKEDIN="https://www.linkedin.com/in/yourusername/"
+    -- HS_TWITTER="https://x.com/yourusername"
+    -- HS_INSTAGRAM="https://www.instagram.com/yourusername/"
+    -- HS_PHONE="+1 2345678900"
+    local pasteboardItems = {
+        {
+            text = "Address",
+            -- subText = "Your address",
+            value = getEnv("HS_ADDRESS")
+        },
+        {
+            text = "Website",
+            -- subText = "Your website",
+            value = getEnv("HS_WEBSITE")
+        },
+        {
+            text = "Email",
+            -- subText = "Your email",
+            value = getEnv("HS_EMAIL")
+        },
+        {
+            text = "Github",
+            -- subText = "Your GitHub profile",
+            value = getEnv("HS_GITHUB")
+        },
+        {
+            text = "LinkedIn",
+            -- subText = "Your LinkedIn profile",
+            value = getEnv("HS_LINKEDIN")
+        },
+        {
+            text = "Twitter",
+            -- subText = "Your Twitter profile",
+            value = getEnv("HS_TWITTER")
+        },
+        {
+            text = "Instagram",
+            -- subText = "Your Instagram profile",
+            value = getEnv("HS_INSTAGRAM")
+        },
+        {
+            text = "Phone",
+            -- subText = "Your phone number",
+            value = getEnv("HS_PHONE")
+        }
+    }
+    
+    local pasteboardActions = {}
+    for _, item in ipairs(pasteboardItems) do
+        pasteboardActions[item.text] = function()
+            -- Type the text at cursor position
+            hs.eventtap.keyStrokes(item.value)
+        end
+    end
+    
+    local pasteboardChooser = hs.chooser.new(function(choice)
+        if choice and choice.text and pasteboardActions[choice.text] then
+            pasteboardActions[choice.text]()
+        end
+    end)
+    
+    pasteboardChooser:choices(pasteboardItems)
+    pasteboardChooser:searchSubText(true)
+    pasteboardChooser:bgDark(false)
+    pasteboardChooser:fgColor({ white = 0, alpha = 1 })
+    pasteboardChooser:subTextColor({ white = 0.4, alpha = 1 })
+    pasteboardChooser:rows(10)
+    pasteboardChooser:width(40)
+    pasteboardChooser:show()
+end
+
+local function showCustomMenu()
+    -- Define menu items with icons
+    -- To use custom icons, place image files in ~/.hammerspoon/icons/ and uncomment the image lines
+    -- Supported formats: PNG, JPEG, SVG, PDF, TIFF, GIF, and other macOS-supported formats
+    -- 
+    -- Icon Library Examples:
+    -- - Heroicons: https://heroicons.com/ (download SVG, place in ~/.hammerspoon/icons/heroicons/outline/)
+    -- - Lucide: https://lucide.dev/ (download SVG, place in ~/.hammerspoon/icons/lucide/)
+    -- - React Icons: https://react-icons.github.io/react-icons/ (download SVG from GitHub)
+    -- - Font Awesome: https://fontawesome.com/icons (download SVG)
+    -- - Material Icons: https://fonts.google.com/icons (download SVG)
+    --
+    -- Example usage:
+    -- image = loadIcon("notepad.png")  -- Simple file in icons folder
+    -- image = loadIconFromLibrary("heroicons", "document-text", "outline")  -- From icon library
+    -- image = loadIconFromLibrary("lucide", "file-text")  -- Lucide icons
+    local menuItems = {
+        {
+            text = "Reload Config",
+            subText = "Reload Hammerspoon configuration",
+            image = loadIconFromLibrary("heroicons", "arrow-path", "solid")
+        },
+        {
+            text = "Open Notepad",
+            subText = "Create a new note",
+            image = loadIconFromLibrary("heroicons", "clipboard-document", "solid")
+        },
+        {
+            text = "Google Search",
+            subText = "Search selected text on Google",
+            image = loadIconFromLibrary("react-icons", "fagoogle")
+        },
+        {
+            text = "YouTube Search",
+            subText = "Search selected text on YouTube",
+            image = loadIconFromLibrary("simple-icons", "youtube")
+        },
+        {
+            text = "Perplexity Search",
+            subText = "Search selected text on Perplexity AI",
+            image = loadIconFromLibrary("simple-icons", "perplexity")
+        },
+        {
+            text = "ChatGPT Search",
+            subText = "Search selected text on ChatGPT",
+            image = loadIconFromLibrary("simple-icons", "openai")
+        },
+        {
+            text = "Claude Search",
+            subText = "Search selected text on Claude AI",
+            image = loadIconFromLibrary("simple-icons", "anthropic")
+        },
+        {
+            text = "Google AI Search",
+            subText = "Search selected text on Google with AI mode",
+            image = loadIconFromLibrary("react-icons", "rigeminifill")
+        },
+        {
+            text = "Toggle Display Sleep",
+            subText = "Toggle display sleep prevention",
+            image = loadIconFromLibrary("heroicons", "computer-desktop", "solid")
+        },
+        {
+            text = "Pasteboard",
+            subText = "Frequently used text snippets",
+            image = loadIconFromLibrary("heroicons", "clipboard", "solid")
+        }
+    }
+    
+    -- Map menu item text to their actions
+    local menuActions = {
+        ["Open Notepad"] = function()
+            openNewZedNotepad()
+        end,
+        ["Google Search"] = function()
+            googleSearch()
+        end,
+        ["YouTube Search"] = function()
+            youtubeSearch()
+        end,
+        ["Perplexity Search"] = function()
+            perplexitySearch("company.thebrowser.Browser")
+        end,
+        ["ChatGPT Search"] = function()
+            chatgptSearch("company.thebrowser.Browser")
+        end,
+        ["Claude Search"] = function()
+            claudeSearch("company.thebrowser.Browser")
+        end,
+        ["Google AI Search"] = function()
+            googleAISearch("company.thebrowser.Browser")
+        end,
+        ["Reload Config"] = function()
+            hs.reload()
+        end,
+        ["Pasteboard"] = function()
+            showPasteboardMenu()
+        end,
+        ["Toggle Display Sleep"] = function()
+            toggleDisplaySleep()
+        end
+    }
+    
+    local chooser = hs.chooser.new(function(choice)
+        if choice and choice.text and menuActions[choice.text] then
+            menuActions[choice.text]()
+        end
+    end)
+    
+    chooser:choices(menuItems)
+    chooser:searchSubText(true)  -- Allow searching in subText as well
+    
+    -- Styling for light theme
+    chooser:bgDark(false)  -- Use light background
+    chooser:fgColor({ white = 0, alpha = 1 })  -- Dark text on light background
+    chooser:subTextColor({ white = 0.4, alpha = 1 })  -- Gray subtext
+    chooser:rows(10)  -- Show up to 10 items
+    chooser:width(40)  -- Set width percentage (50% of screen)
+    
+    chooser:show()  -- Show the menu
+end
+
+-- Bind a hotkey to show the menu (example: Cmd+Shift+M)
+hs.hotkey.bind({"cmd", "shift"}, "m", showCustomMenu)
+
+-- << CUSTOM MENU EXAMPLE
 
 -- Reload Hammerspoon configuration
 hs.alert.show("Hammerspoon config loaded")
