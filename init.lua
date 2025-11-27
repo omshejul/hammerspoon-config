@@ -979,42 +979,47 @@ local function showPasteboardMenu()
     local pasteboardItems = {
         {
             text = "Address",
-            -- subText = "Your address",
+            subText = getEnv("HS_ADDRESS"),
             value = getEnv("HS_ADDRESS")
         },
         {
+            text = "Calender",
+            subText = getEnv("HS_CALENDERLINK"),
+            value = getEnv("HS_CALENDERLINK")
+        },
+        {
             text = "Website",
-            -- subText = "Your website",
+            subText = getEnv("HS_WEBSITE"),
             value = getEnv("HS_WEBSITE")
         },
         {
             text = "Email",
-            -- subText = "Your email",
+            subText = getEnv("HS_EMAIL"),
             value = getEnv("HS_EMAIL")
         },
         {
             text = "Github",
-            -- subText = "Your GitHub profile",
+            subText = getEnv("HS_GITHUB"),
             value = getEnv("HS_GITHUB")
         },
         {
             text = "LinkedIn",
-            -- subText = "Your LinkedIn profile",
+            subText = getEnv("HS_LINKEDIN"),
             value = getEnv("HS_LINKEDIN")
         },
         {
             text = "Twitter",
-            -- subText = "Your Twitter profile",
+            subText = getEnv("HS_TWITTER"),
             value = getEnv("HS_TWITTER")
         },
         {
             text = "Instagram",
-            -- subText = "Your Instagram profile",
+            subText = getEnv("HS_INSTAGRAM"),
             value = getEnv("HS_INSTAGRAM")
         },
         {
             text = "Phone",
-            -- subText = "Your phone number",
+            subText = getEnv("HS_PHONE"),
             value = getEnv("HS_PHONE")
         }
     }
@@ -1061,6 +1066,11 @@ local function showCustomMenu()
     -- image = loadIconFromLibrary("lucide", "file-text")  -- Lucide icons
     local menuItems = {
         {
+            text = "Pasteboard",
+            subText = "Frequently used text snippets",
+            image = loadIconFromLibrary("heroicons", "clipboard", "solid")
+        },
+        {
             text = "Reload Config",
             subText = "Reload Hammerspoon configuration",
             image = loadIconFromLibrary("heroicons", "arrow-path", "solid")
@@ -1104,11 +1114,6 @@ local function showCustomMenu()
             text = "Toggle Display Sleep",
             subText = "Toggle display sleep prevention",
             image = loadIconFromLibrary("heroicons", "computer-desktop", "solid")
-        },
-        {
-            text = "Pasteboard",
-            subText = "Frequently used text snippets",
-            image = loadIconFromLibrary("heroicons", "clipboard", "solid")
         }
     }
     
