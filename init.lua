@@ -363,17 +363,54 @@ end)
 -- << SPEAK WORD
 
 
--- Function to search Google for selected text
+local SEARCH_MODE_SELECTION = "selection"
+local SEARCH_MODE_CLIPBOARD = "clipboard"
+local SEARCH_MODE_FRESH = "fresh"
 
-function googleSearch(browserBundleID)
-    local oldClipboard = hs.pasteboard.getContents()
+local function normalizeSearchArgs(firstArg, secondArg)
+    local bundleID = nil
+    local mode = nil
+
+    if type(firstArg) == "string" or firstArg == nil then
+        bundleID = firstArg
+        mode = secondArg
+    else
+        mode = firstArg
+    end
+
+    if type(mode) ~= "string" then
+        mode = SEARCH_MODE_SELECTION
+    end
+
+    return bundleID, mode
+end
+
+local function getSearchTextForMode(mode)
+    if mode == SEARCH_MODE_CLIPBOARD then
+        return hs.pasteboard.getContents() or ""
+    elseif mode == SEARCH_MODE_FRESH then
+        return ""
+    end
+
     hs.eventtap.keyStroke({"cmd"}, "c")
     hs.timer.usleep(200000)
+    return hs.pasteboard.getContents() or ""
+end
 
-    local selectedText = hs.pasteboard.getContents()
+local function openURLWithOptionalBundle(url, bundleID)
+    if bundleID then
+        hs.urlevent.openURLWithBundle(url, bundleID)
+    else
+        hs.urlevent.openURL(url)
+    end
+end
+
+function googleSearch(browserBundleID, mode)
+    local bundleID, resolvedMode = normalizeSearchArgs(browserBundleID, mode)
+    local selectedText = getSearchTextForMode(resolvedMode)
     local url
 
-    if selectedText:match("://") then
+    if selectedText ~= "" and selectedText:match("://") then
         url = selectedText
     elseif selectedText ~= "" then
         url = "http://www.google.com/search?q=" .. hs.http.encodeForQuery(selectedText)
@@ -381,22 +418,15 @@ function googleSearch(browserBundleID)
         url = "http://www.google.com"
     end
 
-    if browserBundleID then
-        hs.urlevent.openURLWithBundle(url, browserBundleID)
-    else
-        hs.urlevent.openURL(url)
-    end
+    openURLWithOptionalBundle(url, bundleID)
 end
 
-function perplexitySearch(browserBundleID)
-    local oldClipboard = hs.pasteboard.getContents()
-    hs.eventtap.keyStroke({"cmd"}, "c")
-    hs.timer.usleep(200000)
-
-    local selectedText = hs.pasteboard.getContents()
+function perplexitySearch(browserBundleID, mode)
+    local bundleID, resolvedMode = normalizeSearchArgs(browserBundleID, mode)
+    local selectedText = getSearchTextForMode(resolvedMode)
     local url
 
-    if selectedText:match("://") then
+    if selectedText ~= "" and selectedText:match("://") then
         url = selectedText
     elseif selectedText ~= "" then
         url = "https://www.perplexity.ai/search?focus=internet&q=" .. hs.http.encodeForQuery(selectedText)
@@ -404,18 +434,15 @@ function perplexitySearch(browserBundleID)
         url = "https://www.perplexity.ai"
     end
 
-    hs.urlevent.openURLWithBundle(url, browserBundleID)
+    openURLWithOptionalBundle(url, bundleID)
 end
 
-function chatgptSearch(browserBundleID)
-    local oldClipboard = hs.pasteboard.getContents()
-    hs.eventtap.keyStroke({"cmd"}, "c")
-    hs.timer.usleep(200000)
-
-    local selectedText = hs.pasteboard.getContents()
+function chatgptSearch(browserBundleID, mode)
+    local bundleID, resolvedMode = normalizeSearchArgs(browserBundleID, mode)
+    local selectedText = getSearchTextForMode(resolvedMode)
     local url
 
-    if selectedText:match("://") then
+    if selectedText ~= "" and selectedText:match("://") then
         url = selectedText
     elseif selectedText ~= "" then
         url = "https://chat.openai.com/?q=" .. hs.http.encodeForQuery(selectedText)
@@ -423,22 +450,15 @@ function chatgptSearch(browserBundleID)
         url = "https://chat.openai.com"
     end
 
-    if browserBundleID then
-        hs.urlevent.openURLWithBundle(url, browserBundleID)
-    else
-        hs.urlevent.openURL(url)
-    end
+    openURLWithOptionalBundle(url, bundleID)
 end
 
-function claudeSearch(browserBundleID)
-    local oldClipboard = hs.pasteboard.getContents()
-    hs.eventtap.keyStroke({"cmd"}, "c")
-    hs.timer.usleep(200000)
-
-    local selectedText = hs.pasteboard.getContents()
+function claudeSearch(browserBundleID, mode)
+    local bundleID, resolvedMode = normalizeSearchArgs(browserBundleID, mode)
+    local selectedText = getSearchTextForMode(resolvedMode)
     local url
 
-    if selectedText:match("://") then
+    if selectedText ~= "" and selectedText:match("://") then
         url = selectedText
     elseif selectedText ~= "" then
         url = "https://claude.ai/chat?q=" .. hs.http.encodeForQuery(selectedText)
@@ -446,22 +466,15 @@ function claudeSearch(browserBundleID)
         url = "https://claude.ai"
     end
 
-    if browserBundleID then
-        hs.urlevent.openURLWithBundle(url, browserBundleID)
-    else
-        hs.urlevent.openURL(url)
-    end
+    openURLWithOptionalBundle(url, bundleID)
 end
 
-function googleAISearch(browserBundleID)
-    local oldClipboard = hs.pasteboard.getContents()
-    hs.eventtap.keyStroke({"cmd"}, "c")
-    hs.timer.usleep(200000)
-
-    local selectedText = hs.pasteboard.getContents()
+function googleAISearch(browserBundleID, mode)
+    local bundleID, resolvedMode = normalizeSearchArgs(browserBundleID, mode)
+    local selectedText = getSearchTextForMode(resolvedMode)
     local url
 
-    if selectedText:match("://") then
+    if selectedText ~= "" and selectedText:match("://") then
         url = selectedText
     elseif selectedText ~= "" then
         url = "https://www.google.com/search?q=" .. hs.http.encodeForQuery(selectedText) .. "&udm=50"
@@ -469,11 +482,7 @@ function googleAISearch(browserBundleID)
         url = "https://www.google.com/search?udm=50"
     end
 
-    if browserBundleID then
-        hs.urlevent.openURLWithBundle(url, browserBundleID)
-    else
-        hs.urlevent.openURL(url)
-    end
+    openURLWithOptionalBundle(url, bundleID)
 end
 
 function ocrSearch(browserBundleID)
@@ -542,26 +551,22 @@ function googleMultiSearch()
     end
 end
 
-function youtubeSearch()
-    -- Clear the clipboard
-    -- hs.pasteboard.clearContents()
+function youtubeSearch(mode)
+    local resolvedMode = mode
+    if type(resolvedMode) ~= "string" then
+        resolvedMode = SEARCH_MODE_SELECTION
+    end
 
-    -- Copy to clipboard
-    hs.eventtap.keyStroke({"cmd"}, "c")
-    hs.timer.usleep(200000)  -- Wait a bit for the clipboard to populate
-
-    local selectedText = hs.pasteboard.getContents()  -- Get the clipboard content
+    local selectedText = getSearchTextForMode(resolvedMode)
     local url
 
-    -- Check if selectedText starts with "http://" or "https://"
     if selectedText ~= "" then
         url = "https://www.youtube.com/results?search_query=" .. hs.http.encodeForQuery(selectedText)
     else
-        url = "https://www.youtube.com"  -- if no text selected, just open Google
+        url = "https://www.youtube.com"
     end
-    hs.execute("open " .. url)
 
-    -- hs.urlevent.openURLWithBundle(url, 'com.google.Chrome')
+    hs.urlevent.openURL(url)
 end
 -- Function to type clipboard contents
 function typeClipboardContents()
@@ -1067,6 +1072,45 @@ local function showPasteboardMenu()
     pasteboardChooser:show()
 end
 
+local searchModeChooser = nil
+
+local function showSearchModeChooser(title, onSelect)
+    local choices = {
+        {
+            text = "Use Selection",
+            subText = "Search currently highlighted text",
+            mode = SEARCH_MODE_SELECTION
+        },
+        {
+            text = "Search Clipboard",
+            subText = "Search clipboard contents",
+            mode = SEARCH_MODE_CLIPBOARD
+        },
+        {
+            text = "Open Fresh Window",
+            subText = "Open a blank " .. title .. " window",
+            mode = SEARCH_MODE_FRESH
+        }
+    }
+
+    searchModeChooser = hs.chooser.new(function(choice)
+        if choice and choice.mode and onSelect then
+            onSelect(choice.mode)
+        end
+        searchModeChooser = nil
+    end)
+
+    searchModeChooser:choices(choices)
+    searchModeChooser:searchSubText(true)
+    searchModeChooser:bgDark(false)
+    searchModeChooser:fgColor({ white = 0, alpha = 1 })
+    searchModeChooser:subTextColor({ white = 0.4, alpha = 1 })
+    searchModeChooser:rows(#choices)
+    searchModeChooser:width(30)
+    searchModeChooser:placeholderText(title .. " options")
+    searchModeChooser:show()
+end
+
 local function showCustomMenu()
     -- Define menu items with icons
     -- To use custom icons, place image files in ~/.hammerspoon/icons/ and uncomment the image lines
@@ -1142,22 +1186,34 @@ local function showCustomMenu()
             openNewZedNotepad()
         end,
         ["Google Search"] = function()
-            googleSearch()
+            showSearchModeChooser("Google Search", function(mode)
+                googleSearch(nil, mode)
+            end)
         end,
         ["YouTube Search"] = function()
-            youtubeSearch()
+            showSearchModeChooser("YouTube Search", function(mode)
+                youtubeSearch(mode)
+            end)
         end,
         ["Perplexity Search"] = function()
-            perplexitySearch("company.thebrowser.Browser")
+            showSearchModeChooser("Perplexity Search", function(mode)
+                perplexitySearch("company.thebrowser.Browser", mode)
+            end)
         end,
         ["ChatGPT Search"] = function()
-            chatgptSearch("company.thebrowser.Browser")
+            showSearchModeChooser("ChatGPT Search", function(mode)
+                chatgptSearch("company.thebrowser.Browser", mode)
+            end)
         end,
         ["Claude Search"] = function()
-            claudeSearch("company.thebrowser.Browser")
+            showSearchModeChooser("Claude Search", function(mode)
+                claudeSearch("company.thebrowser.Browser", mode)
+            end)
         end,
         ["Google AI Search"] = function()
-            googleAISearch("company.thebrowser.Browser")
+            showSearchModeChooser("Google AI Search", function(mode)
+                googleAISearch("company.thebrowser.Browser", mode)
+            end)
         end,
         ["Reload Config"] = function()
             hs.reload()
