@@ -976,10 +976,29 @@ local function showPasteboardMenu()
     -- HS_TWITTER="https://x.com/yourusername"
     -- HS_INSTAGRAM="https://www.instagram.com/yourusername/"
     -- HS_PHONE="+1 2345678900"
+    -- Helper function to blur text (show first n and last m characters, blur the rest)
+    local function blurText(text, firstChars, lastChars)
+        if not text or text == "" then
+            return ""
+        end
+        firstChars = firstChars or 5
+        lastChars = lastChars or 3
+        
+        if #text <= (firstChars + lastChars) then
+            return text
+        end
+        
+        local first = text:sub(1, firstChars)
+        local last = text:sub(-lastChars)
+        local middleLength = #text - firstChars - lastChars
+        local blurred = string.rep("*", math.min(middleLength, 6))
+        return first .. blurred .. last
+    end
+    
     local pasteboardItems = {
         {
             text = "Address",
-            subText = getEnv("HS_ADDRESS"),
+            subText = blurText(getEnv("HS_ADDRESS"), 9, 18),
             value = getEnv("HS_ADDRESS")
         },
         {
@@ -1019,7 +1038,7 @@ local function showPasteboardMenu()
         },
         {
             text = "Phone",
-            subText = getEnv("HS_PHONE"),
+            subText = blurText(getEnv("HS_PHONE"), 4, 4),
             value = getEnv("HS_PHONE")
         }
     }
