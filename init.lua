@@ -579,14 +579,14 @@ end
 -- Function to open Notepad and create a new note
 function openNewNotepad()
     hs.alert.show("Opening Notepad")
-    local filePath = "/Users/omshejul/SavedMain/notepad/note" .. os.date("%d%m%y_%H%M%S")
+    local filePath = "/Users/omshejul/SavedMain/notepad/note" .. os.date("%d%m%y_%H%M%S") .. ".md"
     hs.execute("/usr/bin/touch " .. filePath)
     local command = "/opt/homebrew/bin/code /Users/omshejul/SavedMain/notepad " .. filePath
     hs.execute(command)
 end
 function openNewZedNotepad()
     hs.alert.show("Opening Zed")
-    local filePath = "/Users/omshejul/SavedMain/notepad/note" .. os.date("%d-%b-%Y_%H:%M:%S")
+    local filePath = "/Users/omshejul/SavedMain/notepad/note" .. os.date("%d-%b-%Y_%H:%M:%S") .. ".md"
     hs.execute("/usr/bin/touch " .. filePath)
     local command = "/usr/local/bin/zed /Users/omshejul/SavedMain/notepad " .. filePath
     hs.execute(command)
